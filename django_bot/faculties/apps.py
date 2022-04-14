@@ -1,0 +1,8 @@
+from django.apps import AppConfig
+
+
+class FacultiesConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'django_bot.faculties'
+    verbose_name = 'Факультет'
+    verbose_name_plural = 'Факультеты'
