@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'django_bot.bot.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'database'
+        'NAME': 'db.sql',
     }
 }
 

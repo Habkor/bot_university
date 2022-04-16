@@ -6,9 +6,10 @@ from telegram.ext import Filters
 from django_bot.app_bot.modules.common.handlers import start
 from django_bot.app_bot.keyboards.students.groups import get_groups_keyboard
 from django_bot.groups.models import Group
+from django_bot.app_bot.keyboards.students.faculties import get_all_faculties
 
 
-STUDENT_NAME, STUDENT_SURNAME, STUDENT_PATRONYMIC, STUDENT_GROUP, END_DIALOG_STUDENT = range(5)
+STUDENT_NAME, STUDENT_SURNAME, STUDENT_PATRONYMIC, FACULTY_STUDENT, STUDENT_GROUP, END_DIALOG_STUDENT = range(6)
 
 
 def register_student_name(update, _):
@@ -30,16 +31,28 @@ def register_student_patronymic(update, _):
     redis.set(f'{update.effective_message.from_user.id}::surname', update.message.text)
     update.effective_message.reply_text('Введите ваше отчество')
 
+    return FACULTY_STUDENT
+
+
+def register_student_faculty(update, _):
+    """Регистрация факультета студента."""
+    redis.set(f'{update.effective_message.from_user.id}::patronymic', update.message.text)
+
+    update.effective_message.reply_text(
+        "Выберите ваш факультет",
+        reply_markup=get_all_faculties()
+    )
+
     return STUDENT_GROUP
 
 
 def register_student_group(update, _):
     """Регистрация группы студента"""
-    redis.set(f'{update.effective_message.from_user.id}::patronymic', update.message.text)
+    faculty_name = update.callback_query.data.split('::')[1]
 
     update.effective_message.reply_text(
         'Выберите вашу группу',
-        reply_markup=get_groups_keyboard()
+        reply_markup=get_groups_keyboard(faculty_name)
     )
 
     return END_DIALOG_STUDENT
@@ -82,8 +95,11 @@ dispatcher.add_handler(
             STUDENT_PATRONYMIC: [
                 MessageHandler(filters=Filters.text, callback=register_student_patronymic)
             ],
+            FACULTY_STUDENT: [
+                MessageHandler(filters=Filters.text, callback=register_student_faculty)
+            ],
             STUDENT_GROUP: [
-                MessageHandler(filters=Filters.text, callback=register_student_group)
+                CallbackQueryHandler(register_student_group, pattern=r'faculty::[А-я]+')
             ],
             END_DIALOG_STUDENT: [
                 CallbackQueryHandler(register_student_end, pattern=r'group::[А-я][-\w]+[0-9]'),

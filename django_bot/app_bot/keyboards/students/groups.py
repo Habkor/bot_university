@@ -2,9 +2,11 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from django_bot.groups.models import Group
 
 
-def get_groups_keyboard():
+def get_groups_keyboard(faculty_name):
     """Функция возвращает клавиаутуру для декана."""
-    groups = Group.objects.all()
+    groups = Group.objects.filter(
+        faculty__name=faculty_name
+    )
 
     list_buttons = []
 
