@@ -8,13 +8,20 @@ def get_all_faculties():
     faculties = Faculty.objects.all()
 
     list_buttons = []
+    row_buttons = []
 
     for faculty in faculties:
-        list_buttons.append(
+        row_buttons.append(
             InlineKeyboardButton(
                 faculty.name,
                 callback_data=f'faculty::{faculty.name}',
             )
         )
 
-    return InlineKeyboardMarkup(inline_keyboard=[list_buttons])
+        if len(row_buttons) == 3:
+            list_buttons.append(row_buttons)
+            row_buttons = []
+
+    list_buttons.append(row_buttons)
+
+    return InlineKeyboardMarkup(inline_keyboard=list_buttons)

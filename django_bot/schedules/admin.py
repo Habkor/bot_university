@@ -9,3 +9,4 @@ class ScheduleForStudent(admin.ModelAdmin):
         'days_of_week', 'text_schedule', 'group',
     )
 
+    list_filter = ['group', 'order', ]

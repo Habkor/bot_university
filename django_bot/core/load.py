@@ -9,5 +9,7 @@ def load_modules():
             "common",
             "decans",
             "students",
+            "teachers",
+            "schedules",
         ]
     )

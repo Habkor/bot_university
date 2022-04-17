@@ -9,13 +9,20 @@ def get_groups_keyboard(faculty_name):
     )
 
     list_buttons = []
+    row_buttons = []
 
     for group in groups:
-        list_buttons.append(
+        row_buttons.append(
             InlineKeyboardButton(
                 group.group_name,
                 callback_data=f'group::{group.group_name}',
             )
         )
 
-    return InlineKeyboardMarkup(inline_keyboard=[list_buttons])
+        if len(row_buttons) == 3:
+            list_buttons.append(row_buttons)
+            row_buttons = []
+
+    list_buttons.append(row_buttons)
+
+    return InlineKeyboardMarkup(inline_keyboard=list_buttons)

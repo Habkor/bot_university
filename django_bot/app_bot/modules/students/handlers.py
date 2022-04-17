@@ -1,12 +1,11 @@
-from django_bot.students.models import Student
-from django_bot.core.bot import redis
-from telegram.ext import CommandHandler, CallbackQueryHandler, ConversationHandler, MessageHandler
-from django_bot.core.bot import dispatcher
-from telegram.ext import Filters
 from django_bot.app_bot.modules.common.handlers import start
+from django_bot.core.bot import redis, dispatcher
+from telegram.ext import ConversationHandler, CallbackQueryHandler, MessageHandler, Filters, CommandHandler
 from django_bot.app_bot.keyboards.students.groups import get_groups_keyboard
 from django_bot.groups.models import Group
 from django_bot.app_bot.keyboards.students.faculties import get_all_faculties
+from django_bot.students.models import Student
+from django_bot.app_bot.keyboards.schedules.schedules import get_button_schedule_keyboard
 
 
 STUDENT_NAME, STUDENT_SURNAME, STUDENT_PATRONYMIC, FACULTY_STUDENT, STUDENT_GROUP, END_DIALOG_STUDENT = range(6)
@@ -14,7 +13,19 @@ STUDENT_NAME, STUDENT_SURNAME, STUDENT_PATRONYMIC, FACULTY_STUDENT, STUDENT_GROU
 
 def register_student_name(update, _):
     """Регистрация студента с именем."""
-    update.effective_message.reply_text('Введите ваше имя')
+    student = Student.objects.filter(
+        chat_id=update.effective_chat.id
+    ).first()
+
+    if not student:
+        update.effective_message.reply_text('Введите ваше имя')
+    else:
+        update.effective_message.reply_text(
+            'Посмотреть рассписание',
+            reply_markup=get_button_schedule_keyboard()
+        )
+        return ConversationHandler.END
+
     return STUDENT_SURNAME
 
 

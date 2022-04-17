@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django_bot.core',
     'django_bot.decans',
     'django_bot.students',
+    'django_bot.teachers'
 ]
 
 MIDDLEWARE = [
@@ -88,7 +89,7 @@ WSGI_APPLICATION = 'django_bot.bot.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sql',
+        'NAME': '/home/danil/db.sql',
     }
 }
 
